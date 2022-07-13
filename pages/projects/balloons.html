@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/project.css">
+    <link rel="stylesheet" href="/styles/slideshow.css">
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+
+    <div class="top-bar">
+      <div class="logo-container">
+        CHRISTOPHER YUN
+      </div>
+
+      <div class="menu">
+        <div class="menu-option-container">
+          <a href="/", class="menu-option">HOME</a>
+        </div>
+        <div class="menu-option-container">
+          <a href="/pages/about.html", class="menu-option">ABOUT</a>
+        </div>
+        <div class="menu-option-container">
+          <a href="/pages/projects.html", class="menu-option">PROJECTS</a>
+        </div>
+        <div class="menu-option-container">
+          <a href="/pages/contact.html", class="menu-option">CONTACT</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-div2">
+      <div class="project-box">
+        <div class="sub-box">
+          <div class="slider">
+
+      <!-- slide 1 -->
+      <div class="slide">
+        <img
+          src="/images/balloons.jpg"
+          alt=""
+        />
+      </div>
+
+       <!-- Control buttons -->
+      <button class="btn btn-next">></button>
+      <button class="btn btn-prev"><</button>
+    </div>
+
+        </div>
+
+        <div class="sub-box2">
+          <div class="sub-box-title2">
+            VestaAIO Sneaker Bot
+          </div>
+          <!-- <a href="#", class="view-more2">VIEW MORE</a> -->
+          <div class="buttons">
+          <a href="#", class="view-more2">VIEW CODE</a>
+          <a href="#", class="view-more2">VIEW PROJECT</a>
+          </div>
+          <div class="sub-box-description2">
+            Sneaker reselling is a side-hustle that involves purchasing very limited items then selling them on second hand markets for huge markups. These limited items can go out of stock in as little as 30 seconds, this is due to the existance of sneaker bots. Sneaker bots use a variety of methods to automate the checkout proccess as fast as possible to secure the most profit for their users.
+            <p>VestaAIO was my attempt at creating a sneaker bot, and at our peak we had 120 users. Developed with a peer of mine, we created a large system of software comprised of the following components:</p>
+              <ul>
+                <li>CLI Application</li>
+                <li>Authentication System/Server-Side Services</li>
+                <li>Anti-Bot Solutions/Exploits</li>
+              </ul>
+            <p>The CLI application was an application that used HTTP requests to simulate the important steps of the checkout process. It was multithreaded allowing thousands of "tasks" to attempt checking out at the same time. Additionally, users could save payment information and HTTP proxies locally. A GUI was designed and coded using ReactJS, but was never fully integrated with the backend</p>
+            <p>The authentication system consisted of two parts, the License API and a Discord bot to make interacting with it simple. Each user was given a software license, they would then use the Discord bot to bind their license to their Discord accounts. After the license was binded, the users would gain access to the rest of the Discord server, they could then use this key to authenticate their current IP address to use the CLI Application.</p>
+            <p>The final and most complicated aspect of this project was the anti-bot solutions and exploits. The anti bot solutions are covered in the Akamai and Recaptcha pages. As for exploits, during the lifespan of this project, we found a handful of zero day vulnerabilities that allowed us to make our bot more efficent. These exploits were found through many methods including, request fuzzing, URL path transversal, code injection, XXS, and DNS interactions.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="/scripts/balls.js"></script>
+    <script type="text/javascript" src="/scripts/slideshow.js"></script>
+  </body>
+</html>

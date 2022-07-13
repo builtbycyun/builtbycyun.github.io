@@ -1,0 +1,199 @@
+@import url("https://cdn.jsdelivr.net/npm/@xz/fonts@1/serve/hk-grotesk.min.css");
+
+html, body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  font-family: 'HK Grotesk', sans-serif;
+  font-weight: 300;
+  font-size: 1.5vw;
+  color: #fff;
+  background-image: linear-gradient(25deg,#16054A,#C8A6B4);
+  overflow: hidden;
+  background-attachment:fixed;
+}
+
+::-webkit-scrollbar {
+  width: 1vw;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);;
+  border-radius: 1vw;
+  border: 0.3vw solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.ball {
+  position: absolute;
+  opacity: 0.5;
+}
+
+.top-bar {
+  height: 12%;
+  /* border: 5px solid green; */
+  display: flex;
+  flex-direction: row;
+}
+
+.logo-container {
+    /* border: 5px solid blue; */
+    height: 100%;
+    width: 30%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: normal;
+}
+
+.menu {
+  /* border: 5px solid blue; */
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: right;
+  padding-right: 5vw
+}
+
+.menu-option-container {
+  font-size: 1vw;
+  /* border: 5px solid green; */
+  width: 8vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu-option {
+  text-decoration: none;
+  color: inherit;
+  text-shadow: 0px 1px 2px rgba(0,0,0,0.2);
+}
+
+.menu-option:hover {
+  text-decoration: none;
+  color: #000;
+}
+
+
+.main-div2 {
+  /* border: 5px solid green; */
+  color: #bfbfbf;
+  font-size: 2vw;
+  height: 80%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  text-shadow: 0px 1px 2px rgba(0,0,0,0.2);
+}
+
+.sub-box {
+  /* border: 5px solid green; */
+  height: 100%;
+  width: 50%;
+  display: flex;
+  /* flex-direction: column; */
+  background-color: #151515;
+  border-radius: 0.7vw 0 0 0.7vw;
+  justify-content: space-between;
+
+}
+
+.sub-box2 {
+  /* border: 5px solid green; */
+  height: 100%;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+}
+
+
+
+.sub-box-title2 {
+  /* border: 5px solid green; */
+  /* height: 30%; */
+  display: flex;
+  /* justify-content: center; */
+  text-align: left;
+  align-items:center;
+  word-wrap: break-word;
+  font-size: 3vw;
+  font-weight: 600;
+  color: #fff;
+  padding-left: 2vw;
+  padding-top: 5vw;
+  padding-right: 1vw;
+}
+
+.sub-box-description2 {
+  /* border: 5px solid green; */
+  height: 60%;
+  /* display: flex; */
+  /* justify-content: center; */
+  text-align: left;
+  /* align-items:center; */
+  will-change: transform;
+  font-size: 1vw;
+  font-weight: 300;
+  color: #fff;
+  padding-left: 2vw;
+  padding-right: 1vw;
+  margin-top: 0.8vw;
+  overflow-y: scroll;
+}
+
+
+.view-more2 {
+
+  border: .1vw solid #BFBFBF;
+  width: 10%;
+  margin-right: 0.5vw;
+  text-decoration: none;
+  color: #fff;
+  font-size: .5vw;
+  padding: .3vw .5vw .3vw .5vw;
+  border: .1vw solid #BFBFBF;
+  border-radius: .3vw;
+  z-index: 1;
+  display: inline;
+
+}
+
+.view-more2:hover {
+  text-decoration: none;
+  color: #000;
+  border: 0.1vw solid #000;
+}
+
+.project-box {
+  background: rgba( 255, 255, 255, 0.1 );
+  box-shadow: 0 0.5vw 1vw 0 rgba( 31, 38, 135, 0.1 );
+
+  border-radius: 0.7vw;
+  border: 1px solid rgba( 255, 255, 255, 0.18 );
+  z-index: 1;
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: 90%;
+}
+
+.buttons {
+  /* border: 5px solid green; */
+  width: 90%;
+  display: flex;
+  flex-direction: row;
+  /* align-items: center; */
+  margin-left: 2vw;
+  margin-top: 0.7vw;
+}

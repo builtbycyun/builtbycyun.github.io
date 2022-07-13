@@ -1,0 +1,100 @@
+@import url("https://cdn.jsdelivr.net/npm/@xz/fonts@1/serve/hk-grotesk.min.css");
+
+html, body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  font-family: 'HK Grotesk', sans-serif;
+  font-weight: 300;
+  font-size: 1.5vw;
+  color: #fff;
+  background-image: linear-gradient(25deg,#16054A,#C8A6B4);  /* background-color: #000; */
+  overflow: hidden;
+  background-attachment:fixed;
+}
+
+.ball {
+  position: absolute;
+  opacity: 0.5;
+}
+
+.top-bar {
+  height: 12%;
+  /* border: 5px solid green; */
+  display: flex;
+  flex-direction: row;
+}
+
+.logo-container {
+    /* border: 5px solid blue; */
+    height: 100%;
+    width: 30%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: normal;
+}
+
+.menu {
+  /* border: 5px solid blue; */
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: right;
+  padding-right: 5vw
+}
+
+.menu-option-container {
+  font-size: 1vw;
+  /* border: 5px solid green; */
+  width: 8vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu-option {
+  text-decoration: none;
+  color: inherit;
+  text-shadow: 0px 1px 2px rgba(0,0,0,0.2);
+}
+
+.menu-option:hover {
+  text-decoration: none;
+  color: #000;
+}
+
+.main-div {
+  /* border: 5px solid green; */
+  color: #bfbfbf;
+  font-size: 2vw;
+  height: 70%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  text-shadow: 0px 1px 2px rgba(0,0,0,0.2);
+}
+
+.learn-more {
+  margin-top: 0.8vw;
+  text-align: left;
+  float: left;
+  text-decoration: none;
+  color: inherit;
+  font-size: .8vw;
+  padding: .5vw 1vw .5vw 1vw;
+  border: .1vw solid #BFBFBF;
+  border-radius: .3vw;
+  z-index: 1;
+}
+
+.learn-more:hover {
+  text-decoration: none;
+  color: #000;
+  border: .1vw solid #000;
+}
