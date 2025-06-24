@@ -5,8 +5,9 @@ const nextConfig = {
   images: {
     unoptimized: true
   },
-  basePath: process.env.NODE_ENV === 'production' ? '/terminal-portfolio' : '',
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/terminal-portfolio' : '',
+  // Remove or comment out these lines since you're using username.github.io
+  // basePath: '/terminal-portfolio',
+  // assetPrefix: '/terminal-portfolio',
 }
 
 module.exports = nextConfig
