@@ -9,7 +9,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'user@portfolio:~$',
+  title: 'cyun@portfolio:~$',
   description: 'Terminal-based developer portfolio',
   keywords: ['developer', 'portfolio', 'terminal', 'programming'],
 };

@@ -122,7 +122,11 @@ ${personalInfo.specialties.map(s => `• <span class="tech-name">${s}</span>`).j
   {
     command: 'tail -f /var/log/career.log',
     content: () => {
-      let output = '==> Following career.log <==\n\n';
+      let output = `<span class="section-header">${createAsciiArt('EXPERIENCE')}</span>
+
+==> Following career.log <==
+
+`;
       experience.forEach(job => {
         output += `[${new Date().toISOString()}] INFO: Career Event\n`;
         output += `Position: <span class="job-title">${job.position}</span>\n`;

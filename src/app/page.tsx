@@ -33,7 +33,7 @@ export default function TerminalPortfolio() {
 
   useEffect(() => {
     // Initial terminal setup
-    addLine('prompt', 'user@portfolio:~$ ');
+    addLine('prompt', 'cyun@portfolio:~$ ');
   }, []);
 
   const addLine = (type: TerminalLine['type'], content: string, delay = 0) => {
@@ -71,7 +71,7 @@ export default function TerminalPortfolio() {
       
       // Add new prompt
       setTimeout(() => {
-        addLine('prompt', 'user@portfolio:~$ ');
+        addLine('prompt', 'cyun@portfolio:~$ ');
         setCurrentSection(prev => prev + 1);
         isExecutingRef.current = false;
       }, 500);
@@ -87,7 +87,7 @@ export default function TerminalPortfolio() {
             const newLines = [...prev];
             const lastLine = newLines[newLines.length - 1];
             if (lastLine && lastLine.type === 'prompt') {
-              lastLine.content = `user@portfolio:~$ ${command.slice(0, i)}`;
+              lastLine.content = `cyun@portfolio:~$ ${command.slice(0, i)}`;
             }
             return newLines;
           });
@@ -110,7 +110,7 @@ export default function TerminalPortfolio() {
           <div className="terminal-button minimize"></div>
           <div className="terminal-button maximize"></div>
         </div>
-        <div className="terminal-title">user@portfolio: ~</div>
+        <div className="terminal-title">cyun@portfolio: ~</div>
       </div>
       
       <div ref={terminalRef} className="terminal-container">
@@ -140,7 +140,7 @@ export default function TerminalPortfolio() {
         
         {currentSection >= terminalSections.length && (
           <div className="terminal-line">
-            <span className="prompt">user@portfolio:~$ </span>
+            <span className="prompt">cyun@portfolio:~$ </span>
             <span className="comment"># Portfolio exploration complete! Use normal scrolling to navigate.</span>
           </div>
         )}
