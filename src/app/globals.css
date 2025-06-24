@@ -327,10 +327,6 @@ a:hover {
   }
 }
 
-/* Add blank space on mobile for better scroll experience */
-.terminal-container {
-  padding-bottom: 200px; /* Default padding */
-}
 
 @media (max-width: 768px) {
   .terminal-container {
