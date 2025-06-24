@@ -326,3 +326,20 @@ a:hover {
     font-size: 6px;
   }
 }
+
+/* Add blank space on mobile for better scroll experience */
+.terminal-container {
+  padding-bottom: 200px; /* Default padding */
+}
+
+@media (max-width: 768px) {
+  .terminal-container {
+    padding-bottom: 20vh; /* 50% of viewport height on mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .terminal-container {
+    padding-bottom: 30vh; /* Even more space on small phones */
+  }
+}
