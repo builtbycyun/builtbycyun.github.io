@@ -3,128 +3,97 @@ import { useEffect, useRef } from 'react';
 interface UseTerminalScrollProps {
   currentSection: number;
   sectionsLength: number;
-  hasNewContent: boolean;
-  isAtBottom: boolean;
-  setIsAtBottom: (value: boolean) => void;
-  setHasNewContent: (value: boolean) => void;
-  executeNextCommand: () => void;
   isExecutingRef: React.MutableRefObject<boolean>;
-  scrollTimeoutRef: React.MutableRefObject<NodeJS.Timeout | null>;
+  hasNewContentRef: React.MutableRefObject<boolean>;
+  executeNextCommand: () => void;
 }
+
+// Pause required between consuming fresh output and running the next command,
+// so wheel momentum can't chain commands the user didn't ask for.
+const COOLDOWN_MS = 600;
 
 export const useTerminalScroll = ({
   currentSection,
   sectionsLength,
-  hasNewContent,
-  isAtBottom,
-  setIsAtBottom,
-  setHasNewContent,
-  executeNextCommand,
   isExecutingRef,
-  scrollTimeoutRef,
+  hasNewContentRef,
+  executeNextCommand,
 }: UseTerminalScrollProps) => {
   const terminalRef = useRef<HTMLDivElement>(null);
+  const cooldownRef = useRef(0);
+  const triggerTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    const handleScroll = (e: WheelEvent | TouchEvent) => {
-      // If all sections are complete, allow normal scrolling
-      if (currentSection >= sectionsLength) {
-        return; // Let default scroll behavior happen
-      }
-      
-      let deltaY = 0;
-      
-      // Handle both wheel and touch events
-      if (e.type === 'wheel') {
-        deltaY = (e as WheelEvent).deltaY;
-      } else if (e.type === 'touchmove') {
-        // For touch, we'll handle this differently - let it scroll naturally
+    const el = terminalRef.current;
+    if (!el) return;
+
+    const isAtBottom = (tolerance: number) =>
+      el.scrollTop + el.clientHeight >= el.scrollHeight - tolerance;
+
+    const tryExecute = (delay: number, bypassCooldown = false) => {
+      // One gesture acknowledges freshly printed output; the next one runs a command.
+      if (hasNewContentRef.current) {
+        hasNewContentRef.current = false;
+        cooldownRef.current = Date.now();
         return;
       }
-      
-      // Allow normal upward scrolling
-      if (deltaY < 0) {
-        return; // Let default scroll behavior happen
-      }
-      
-      // Check if we're at the bottom after new content
-      const terminalElement = terminalRef.current;
-      if (terminalElement) {
-        const { scrollTop, scrollHeight, clientHeight } = terminalElement;
-        const atBottom = scrollTop + clientHeight >= scrollHeight - 10; // 10px tolerance
-        setIsAtBottom(atBottom);
-        
-        // If there's new content and we're not at bottom, allow normal scrolling
-        if (hasNewContent && !atBottom) {
-          return; // Let default scroll behavior happen
+      if (!bypassCooldown && Date.now() - cooldownRef.current < COOLDOWN_MS) return;
+      if (triggerTimeoutRef.current) clearTimeout(triggerTimeoutRef.current);
+      triggerTimeoutRef.current = setTimeout(() => {
+        if (!isExecutingRef.current && currentSection < sectionsLength) {
+          executeNextCommand();
         }
-      }
-      
-      // Prevent downward scrolling and handle command execution (only for wheel events)
-      if (deltaY > 0 && e.type === 'wheel') {
-        e.preventDefault();
-        
-        // If we just reached the bottom of new content, clear the flag
-        if (hasNewContent && isAtBottom) {
-          setHasNewContent(false);
-        }
-        
-        // Debounce rapid scroll events
-        if (scrollTimeoutRef.current) {
-          clearTimeout(scrollTimeoutRef.current);
-        }
-        
-        scrollTimeoutRef.current = setTimeout(() => {
-          // Only execute if not currently executing, there are more sections, and no new content to scroll through
-          if (!isExecutingRef.current && currentSection < sectionsLength && !hasNewContent) {
-            executeNextCommand();
-          }
-        }, 50); // 50ms debounce
-      }
+      }, delay);
     };
 
-    // Handle touch scrolling separately for mobile
+    const handleWheel = (e: WheelEvent) => {
+      if (currentSection >= sectionsLength) return; // tour over: normal scrolling
+      if (e.deltaY <= 0) return; // scrolling up is always free
+      if (!isAtBottom(10)) return; // still reading: normal scrolling
+      e.preventDefault();
+      tryExecute(50);
+    };
+
     const handleTouchEnd = () => {
-      const terminalElement = terminalRef.current;
-      if (terminalElement) {
-        const { scrollTop, scrollHeight, clientHeight } = terminalElement;
-        const atBottom = scrollTop + clientHeight >= scrollHeight - 20; // Larger tolerance for touch
-        setIsAtBottom(atBottom);
-        
-        // If we're at bottom and no new content, allow next command
-        if (atBottom && !hasNewContent && !isExecutingRef.current && currentSection < sectionsLength) {
-          // Small delay to prevent accidental triggers
-          setTimeout(() => {
-            if (!isExecutingRef.current && currentSection < sectionsLength && !hasNewContent) {
-              executeNextCommand();
-            }
-          }, 300);
-        }
-        
-        // Clear new content flag if at bottom
-        if (hasNewContent && atBottom) {
-          setHasNewContent(false);
-        }
-      }
+      if (currentSection >= sectionsLength) return;
+      if (!isAtBottom(24)) return;
+      tryExecute(250);
     };
 
-    const terminalElement = terminalRef.current;
-    if (terminalElement) {
-      // Desktop scroll handling
-      terminalElement.addEventListener('wheel', handleScroll, { passive: false });
-      
-      // Mobile touch handling
-      terminalElement.addEventListener('touchend', handleTouchEnd, { passive: true });
-      
-      return () => {
-        terminalElement.removeEventListener('wheel', handleScroll);
-        terminalElement.removeEventListener('touchend', handleTouchEnd);
-        if (scrollTimeoutRef.current) {
-          clearTimeout(scrollTimeoutRef.current);
-        }
-      };
-    }
-  }, [currentSection, sectionsLength, hasNewContent, isAtBottom, setIsAtBottom, setHasNewContent, executeNextCommand, isExecutingRef, scrollTimeoutRef]);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const page = el.clientHeight * 0.8;
+
+      if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault();
+        el.scrollBy({ top: e.key === 'PageUp' ? -page : -64, behavior: 'smooth' });
+        return;
+      }
+
+      const isForward =
+        e.key === 'Enter' || e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ';
+      if (!isForward) return;
+      e.preventDefault();
+
+      if (!isAtBottom(10)) {
+        el.scrollBy({ top: e.key === 'ArrowDown' ? 64 : page, behavior: 'smooth' });
+        return;
+      }
+      if (currentSection >= sectionsLength) return;
+      tryExecute(0, e.key === 'Enter'); // a deliberate Enter never waits
+    };
+
+    el.addEventListener('wheel', handleWheel, { passive: false });
+    el.addEventListener('touchend', handleTouchEnd, { passive: true });
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      el.removeEventListener('wheel', handleWheel);
+      el.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener('keydown', handleKeyDown);
+      if (triggerTimeoutRef.current) clearTimeout(triggerTimeoutRef.current);
+    };
+  }, [currentSection, sectionsLength, isExecutingRef, hasNewContentRef, executeNextCommand]);
 
   return terminalRef;
 };

@@ -1,155 +1,162 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { terminalSections } from '../lib/terminalSections';
 import { useTerminalScroll } from '../lib/useTerminalScroll';
+import { fetchAuctionballGames } from '../lib/liveStats';
 
 interface TerminalLine {
-  id: string;
-  type: 'prompt' | 'command' | 'output' | 'loading';
+  id: number;
+  type: 'prompt' | 'output' | 'loading';
   content: string;
-  delay?: number;
+}
+
+function PromptPrefix() {
+  return (
+    <>
+      <span className="prompt-user">cyun@portfolio</span>
+      <span className="prompt-dim">:</span>
+      <span className="prompt-path">~</span>
+      <span className="prompt-dim">$ </span>
+    </>
+  );
 }
 
 export default function TerminalPortfolio() {
   const [lines, setLines] = useState<TerminalLine[]>([]);
   const [currentSection, setCurrentSection] = useState(0);
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isExecutingRef = useRef(false);
-  const [hasNewContent, setHasNewContent] = useState(false);
-  const [isAtBottom, setIsAtBottom] = useState(true);
+  const hasNewContentRef = useRef(false);
+  const initializedRef = useRef(false);
+  const nextLineIdRef = useRef(0);
+
+  const isComplete = currentSection >= terminalSections.length;
 
   const terminalRef = useTerminalScroll({
     currentSection,
     sectionsLength: terminalSections.length,
-    hasNewContent,
-    isAtBottom,
-    setIsAtBottom,
-    setHasNewContent,
-    executeNextCommand,
     isExecutingRef,
-    scrollTimeoutRef,
+    hasNewContentRef,
+    executeNextCommand,
   });
 
   useEffect(() => {
-    // Initial terminal setup
-    addLine('prompt', 'cyun@portfolio:~$ ');
+    if (initializedRef.current) return;
+    initializedRef.current = true;
+    addLine('prompt', '');
+    // Start early so the count is ready by the time the projects section runs
+    fetchAuctionballGames();
   }, []);
 
-  const addLine = (type: TerminalLine['type'], content: string, delay = 0) => {
-    setTimeout(() => {
-      setLines(prev => [...prev, {
-        id: Math.random().toString(36),
-        type,
-        content,
-        delay
-      }]);
-    }, delay);
+  const addLine = (type: TerminalLine['type'], content: string) => {
+    const id = nextLineIdRef.current++;
+    setLines(prev => [...prev, { id, type, content }]);
+  };
+
+  const scrollToBottom = () => {
+    requestAnimationFrame(() => {
+      const el = terminalRef.current;
+      if (el) el.scrollTop = el.scrollHeight;
+    });
   };
 
   async function executeNextCommand() {
-    if (currentSection >= terminalSections.length || isExecutingRef.current) return;
-    
+    if (isComplete || isExecutingRef.current) return;
     isExecutingRef.current = true;
     const section = terminalSections[currentSection];
-    
-    // Type the command
+
     await typeCommand(section.command);
-    
-    // Show loading
-    addLine('loading', 'Loading...');
-    
-    // Wait for loading simulation
+
+    addLine('loading', 'Loading');
+    scrollToBottom();
+
     setTimeout(() => {
-      // Remove loading line and add output
+      // Replace the loading line with the command's output
       setLines(prev => prev.slice(0, -1));
       addLine('output', section.content());
-      
-      // Mark that we have new content to scroll through
-      setHasNewContent(true);
-      setIsAtBottom(false);
-      
-      // Add new prompt
+      hasNewContentRef.current = true;
+
       setTimeout(() => {
-        addLine('prompt', 'cyun@portfolio:~$ ');
+        addLine('prompt', '');
         setCurrentSection(prev => prev + 1);
         isExecutingRef.current = false;
       }, 500);
-    }, 800 + Math.random() * 700); // Random loading time between 800-1500ms
+    }, 800 + Math.random() * 600);
   }
 
-  const typeCommand = (command: string): Promise<void> => {
-    return new Promise((resolve) => {
-      let i = 0;
+  const typeCommand = (command: string): Promise<void> =>
+    new Promise(resolve => {
+      let i = 1;
       const typeChar = () => {
-        if (i <= command.length) {
-          setLines(prev => {
-            const newLines = [...prev];
-            const lastLine = newLines[newLines.length - 1];
-            if (lastLine && lastLine.type === 'prompt') {
-              lastLine.content = `cyun@portfolio:~$ ${command.slice(0, i)}`;
-            }
-            return newLines;
-          });
+        const typed = command.slice(0, i);
+        setLines(prev => {
+          const next = [...prev];
+          const last = next[next.length - 1];
+          if (last?.type === 'prompt') {
+            next[next.length - 1] = { ...last, content: typed };
+          }
+          return next;
+        });
+        scrollToBottom();
+        if (i < command.length) {
           i++;
-          setTimeout(typeChar, 30 + Math.random() * 40); // Faster, more consistent typing
+          setTimeout(typeChar, 24 + Math.random() * 36);
         } else {
-          // Add a brief pause before resolving
-          setTimeout(resolve, 200);
+          setTimeout(resolve, 180);
         }
       };
       typeChar();
     });
-  };
 
   return (
-    <div className="terminal-window h-screen">
-      <div className="terminal-header">
-        <div className="terminal-buttons">
-          <div className="terminal-button close"></div>
-          <div className="terminal-button minimize"></div>
-          <div className="terminal-button maximize"></div>
+    <div className="terminal-shell">
+      <div className="terminal-window">
+        <header className="terminal-header">
+          <div className="terminal-buttons" aria-hidden="true">
+            <span className="terminal-button close" />
+            <span className="terminal-button minimize" />
+            <span className="terminal-button maximize" />
+          </div>
+          <div className="terminal-title">cyun@portfolio: ~</div>
+        </header>
+
+        <div ref={terminalRef} className="terminal-container" role="log">
+          {lines.map((line, index) => {
+            const isLastLine = index === lines.length - 1;
+            return (
+              <div key={line.id} className="terminal-line">
+                {line.type === 'prompt' && (
+                  <>
+                    <PromptPrefix />
+                    <span className="command">{line.content}</span>
+                    {isLastLine && <span className="cursor" aria-hidden="true" />}
+                  </>
+                )}
+                {line.type === 'output' && (
+                  <pre
+                    className="output"
+                    dangerouslySetInnerHTML={{ __html: line.content }}
+                  />
+                )}
+                {line.type === 'loading' && (
+                  <span className="loading-dots">{line.content}</span>
+                )}
+              </div>
+            );
+          })}
+
+          {isComplete ? (
+            <div className="terminal-line comment">
+              # That&apos;s everything — thanks for stopping by. Scroll freely, and reach out anytime.
+            </div>
+          ) : (
+            !isExecutingRef.current && (
+              <div className="terminal-line scroll-hint" aria-hidden="true">
+                <span className="scroll-hint-arrow">▼</span> scroll or press Enter to run the next command
+              </div>
+            )
+          )}
         </div>
-        <div className="terminal-title">cyun@portfolio: ~</div>
-      </div>
-      
-      <div ref={terminalRef} className="terminal-container">
-        {lines.map((line) => (
-          <div key={line.id} className="terminal-line">
-            {line.type === 'prompt' && (
-              <span className="prompt">{line.content}</span>
-            )}
-            {line.type === 'command' && (
-              <span className="command">{line.content}</span>
-            )}
-            {line.type === 'output' && (
-              <pre 
-                className="output" 
-                dangerouslySetInnerHTML={{ __html: line.content }}
-              ></pre>
-            )}
-            {line.type === 'loading' && (
-              <span className="loading-dots output">{line.content}</span>
-            )}
-          </div>
-        ))}
-        
-        {currentSection < terminalSections.length && (
-          <span className="cursor">█</span>
-        )}
-        
-        {currentSection >= terminalSections.length && (
-          <div className="terminal-line">
-            <span className="prompt">cyun@portfolio:~$ </span>
-            <span className="comment"># Portfolio exploration complete! Use normal scrolling to navigate.</span>
-          </div>
-        )}
-        
-        {currentSection < terminalSections.length && !isExecutingRef.current && (
-          <div className="terminal-line comment">
-            # Scroll down to continue...
-          </div>
-        )}
       </div>
     </div>
   );

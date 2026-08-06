@@ -61,6 +61,49 @@ export const projects: Project[] = [
         ]
     },
     {
+        id: "priors",
+        name: "Priors",
+        description: "A causal knowledge graph of the market for retail traders. An LLM proposes multi-hop causal links from the news (Strait of Hormuz closes → oil shortage → US corn prices); statistics validate them against historical price data. Only what survives becomes a signal.",
+        technologies: ["Python", "TypeScript", "Go", "PostgreSQL", "Docker", "Claude API"],
+        githubUrl: "Available upon request", // private (quantgraph/priors)
+        features: [
+            "LLM proposes causal hypotheses; statistical validation decides what becomes a signal",
+            "Directional, confidence-rated signals that explain why a price should move",
+            "Explorable causal graph linking news, events, and market vehicles",
+            "Multi-user SaaS: Go edge with managed auth (WorkOS), per-user tenancy via Postgres RLS",
+            "Heavy analysis runs once globally — every user is a cheap read over the shared graph"
+        ]
+    },
+    {
+        id: "auctionball",
+        name: "Auctionball",
+        description: "Head-to-head all-eras basketball auction game: two players bid to draft a 5-man squad from the all-time greats, then a chemistry-aware simulator decides the winner. Live in production.",
+        technologies: ["TypeScript", "Node.js", "WebSockets", "Vite", "PostgreSQL", "Render"],
+        githubUrl: "Available upon request", // private
+        liveUrl: "https://auctionball.xyz",
+        features: [
+            "Possession-based, spatially-aware Monte-Carlo simulator — deterministic per seed for replays",
+            "Synergy engine: team fit (spacing, playmaking, switchability) beats raw star power >60% of the time",
+            "Calibrated against real NBA stat distributions over 500-game runs",
+            "WebSocket matchmaking with bot fallback, reconnects, and a daily win-streak leaderboard",
+            "Mode-agnostic platform: new game modes plug in an asset pool, rules, simulator, and renderer"
+        ]
+    },
+    {
+        id: "pokernow-ai",
+        name: "PokerNow AI",
+        description: "An AI poker bot that plays live on PokerNow.com with Claude as its decision engine — plus a self-learning loop that rewrites its own strategy files after every hand.",
+        technologies: ["Python", "Flask", "Claude API", "WebSockets", "SocketIO"],
+        githubUrl: "https://github.com/builtbycyun/pokernow-ai",
+        features: [
+            "Speaks PokerNow's WebSocket protocol directly: live game state via delta merging",
+            "Deterministic hand analysis feeding compact JSON prompts to Claude",
+            "Post-hand reviewer (Claude Opus) selectively updates evolving strategy files",
+            "Multi-bot self-play training — three bots seated in the same game",
+            "Real-time cyberpunk table UI showing the AI's reasoning and opponent hand predictions"
+        ]
+    },
+    {
         id: "vesta-technologies",
         name: "Vesta Technologies LLC",
         description: "A SaaS automation platform designed to purchase high-demand products during releases. Included anti-bot evasion, user-facing dashboard, and advanced backend systems.",
@@ -101,35 +144,6 @@ export const projects: Project[] = [
             "Support for Recaptcha V2 and V3",
             "Compatible across different target websites",
             "Multi-threaded and distributed harvester support"
-        ]
-    },
-    {
-        id: "speakez-waf",
-        name: "SpeakEZ Web Security",
-        description: "A custom Web Application Firewall (WAF) that evaluates behavioral authenticity using machine learning fingerprinting.",
-        technologies: ["TensorFlow", "JavaScript", "Python"],
-        githubUrl: "https://github.com/builtbycyun/SpeakEZ",
-        features: [
-            "Hardware/browser/mouse telemetry fingerprinting",
-            "Neural network trained to classify human vs bot",
-            "Inspired by WAFs like Akamai and PerimeterX",
-            "Fully self-hosted and customizable",
-            "Security enforcement via server-side API"
-        ]
-    },
-    {
-        id: "frat-finance-dashboard",
-        name: "Fraternity Financial Dashboard",
-        description: "Full-stack budgeting and expense tracking platform built for fraternity chapter treasurers to manage member dues and budgeting.",
-        technologies: ["React.js", "Flask", "Firebase"],
-        githubUrl: "Available upon request", // Add if available
-        liveUrl: "", // Add if available
-        features: [
-            "Authentication and secure user access",
-            "Real-time database updates via Firebase",
-            "Member payment tracking and expense categorization",
-            "Responsive dashboard UI for mobile and desktop",
-            "Full deployment via Firebase Hosting"
         ]
     }
 ];

@@ -1,5 +1,6 @@
 import { personalInfo, techStack, projects, experience, contactInfo } from './data';
 import { createAsciiArt } from './utils';
+import { getAuctionballGames } from './liveStats';
 
 export interface TerminalSection {
   command: string;
@@ -15,11 +16,11 @@ Location: <span class="highlight">${personalInfo.location}</span>
 Experience: <span class="years-experience">${personalInfo.yearsOfExperience}+ years</span>
 Education: <span class="highlight">B.S. Computer Science, University of Maryland</span>
 Status: <span class="status-available">Available for opportunities</span>
-Resume: <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" class="contact-info">View Resume (PDF)</a>`
+Resume: <a href="/Christopher_Yun_Resume.pdf" target="_blank" rel="noopener noreferrer" class="contact-info">View Resume (PDF)</a>`
   },
   {
     command: 'cat about_me.txt',
-    content: () => `<span class="section-header">${createAsciiArt('ABOUT')}</span>
+    content: () => `<span class="ascii-art">${createAsciiArt('ABOUT')}</span>
 
 ${personalInfo.bio}
 
@@ -105,15 +106,25 @@ ${personalInfo.specialties.map(s => `• <span class="tech-name">${s}</span>`).j
   {
     command: 'find ./projects -name "*.md" -exec head -20 {} \\;',
     content: () => {
-      let output = `<span class="section-header">${createAsciiArt('PROJECTS')}</span>\n\n`;
+      let output = `<span class="ascii-art">${createAsciiArt('PROJECTS')}</span>\n`;
       projects.forEach(project => {
         output += `==> ./projects/${project.name.toLowerCase().replace(/\s+/g, '-')}.md <==\n`;
         output += `# <span class="project-name">${project.name}</span>\n\n`;
         output += `${project.description}\n\n`;
         output += `## <span class="section-header">Tech Stack</span>\n<span class="tech-name">${project.technologies.join('</span>, <span class="tech-name">')}</span>\n\n`;
         output += `## <span class="section-header">Features</span>\n${project.features.map(f => `• <span class="achievement">${f}</span>`).join('\n')}\n\n`;
-        if (project.githubUrl) output += `<span class="contact-info">GitHub: ${project.githubUrl}</span>\n`;
-        if (project.liveUrl) output += `<span class="contact-info">Live: ${project.liveUrl}</span>\n`;
+        if (project.id === 'auctionball') {
+          const games = getAuctionballGames();
+          if (games !== null) {
+            output += `<span class="years-experience">${games.toLocaleString()} games played</span> <span class="comment"># live count, fetched from the production server just now</span>\n`;
+          }
+        }
+        if (project.githubUrl) {
+          output += project.githubUrl.startsWith('http')
+            ? `<span class="contact-info">GitHub:</span> <a href="${project.githubUrl}" target="_blank" rel="noopener noreferrer">${project.githubUrl}</a>\n`
+            : `<span class="contact-info">GitHub: ${project.githubUrl}</span>\n`;
+        }
+        if (project.liveUrl) output += `<span class="contact-info">Live:</span> <a href="${project.liveUrl}" target="_blank" rel="noopener noreferrer">${project.liveUrl}</a>\n`;
         output += '\n' + '─'.repeat(60) + '\n\n';
       });
       return output;
@@ -122,7 +133,7 @@ ${personalInfo.specialties.map(s => `• <span class="tech-name">${s}</span>`).j
   {
     command: 'tail -f /var/log/career.log',
     content: () => {
-      let output = `<span class="section-header">${createAsciiArt('EXPERIENCE')}</span>
+      let output = `<span class="ascii-art">${createAsciiArt('EXPERIENCE')}</span>
 
 ==> Following career.log <==
 
@@ -149,7 +160,7 @@ ${personalInfo.specialties.map(s => `• <span class="tech-name">${s}</span>`).j
         data: contactInfo,
         timestamp: new Date().toISOString()
       };
-      return `<span class="section-header">${createAsciiArt('CONTACT')}</span>
+      return `<span class="ascii-art">${createAsciiArt('CONTACT')}</span>
 
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -159,10 +170,10 @@ Date: ${new Date().toUTCString()}
   &quot;status&quot;: <span class="highlight">200</span>,
   &quot;message&quot;: <span class="highlight">&quot;OK&quot;</span>,
   &quot;data&quot;: {
-    &quot;email&quot;: <span class="contact-info">&quot;${contactInfo.email}&quot;</span>,
-    &quot;github&quot;: <span class="contact-info">&quot;${contactInfo.github}&quot;</span>,
-    &quot;linkedin&quot;: <span class="contact-info">&quot;${contactInfo.linkedin}&quot;</span>,
-    &quot;website&quot;: <span class="contact-info">&quot;${contactInfo.website || 'N/A'}&quot;</span>,
+    &quot;email&quot;: <a href="mailto:${contactInfo.email}">&quot;${contactInfo.email}&quot;</a>,
+    &quot;github&quot;: <a href="${contactInfo.github}" target="_blank" rel="noopener noreferrer">&quot;${contactInfo.github}&quot;</a>,
+    &quot;linkedin&quot;: <a href="${contactInfo.linkedin}" target="_blank" rel="noopener noreferrer">&quot;${contactInfo.linkedin}&quot;</a>,
+    &quot;website&quot;: ${contactInfo.website ? `<a href="${contactInfo.website}" target="_blank" rel="noopener noreferrer">&quot;${contactInfo.website}&quot;</a>` : `<span class="contact-info">&quot;N/A&quot;</span>`},
     &quot;location&quot;: <span class="highlight">&quot;${contactInfo.location}&quot;</span>
   },
   &quot;timestamp&quot;: &quot;${response.timestamp}&quot;
