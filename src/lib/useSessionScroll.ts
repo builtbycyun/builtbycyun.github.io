@@ -1,66 +1,72 @@
 import { useEffect, useRef } from 'react';
 
-interface UseTerminalScrollProps {
-  currentSection: number;
-  sectionsLength: number;
-  isExecutingRef: React.MutableRefObject<boolean>;
+interface UseSessionScrollProps {
+  /** False once the scripted tour is over and the visitor owns the prompt. */
+  active: boolean;
+  isRunningRef: React.MutableRefObject<boolean>;
   hasNewContentRef: React.MutableRefObject<boolean>;
-  executeNextCommand: () => void;
+  advance: () => void;
 }
 
-// Pause required between consuming fresh output and running the next command,
-// so wheel momentum can't chain commands the user didn't ask for.
+// Pause required between reading fresh output and sending the next prompt, so
+// wheel momentum can't fire off turns the visitor never asked for.
 const COOLDOWN_MS = 600;
 
-export const useTerminalScroll = ({
-  currentSection,
-  sectionsLength,
-  isExecutingRef,
+/**
+ * Drives the scripted session from scroll, touch, and keyboard. While the tour
+ * is running, a downward gesture at the bottom of the transcript sends the next
+ * prompt instead of scrolling past the end. Once it's over the hook goes quiet
+ * and the page scrolls (and types) normally.
+ */
+export const useSessionScroll = ({
+  active,
+  isRunningRef,
   hasNewContentRef,
-  executeNextCommand,
-}: UseTerminalScrollProps) => {
-  const terminalRef = useRef<HTMLDivElement>(null);
+  advance,
+}: UseSessionScrollProps) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
   const cooldownRef = useRef(0);
-  const triggerTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const advanceRef = useRef(advance);
+  advanceRef.current = advance;
 
   useEffect(() => {
-    const el = terminalRef.current;
+    const el = scrollRef.current;
     if (!el) return;
 
     const isAtBottom = (tolerance: number) =>
       el.scrollTop + el.clientHeight >= el.scrollHeight - tolerance;
 
-    const tryExecute = (delay: number, bypassCooldown = false) => {
-      // One gesture acknowledges freshly printed output; the next one runs a command.
+    const trySend = (delay: number, bypassCooldown = false) => {
+      // One gesture acknowledges freshly printed output; the next one sends.
       if (hasNewContentRef.current) {
         hasNewContentRef.current = false;
         cooldownRef.current = Date.now();
         return;
       }
       if (!bypassCooldown && Date.now() - cooldownRef.current < COOLDOWN_MS) return;
-      if (triggerTimeoutRef.current) clearTimeout(triggerTimeoutRef.current);
-      triggerTimeoutRef.current = setTimeout(() => {
-        if (!isExecutingRef.current && currentSection < sectionsLength) {
-          executeNextCommand();
-        }
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => {
+        if (!isRunningRef.current) advanceRef.current();
       }, delay);
     };
 
     const handleWheel = (e: WheelEvent) => {
-      if (currentSection >= sectionsLength) return; // tour over: normal scrolling
+      if (!active) return;
       if (e.deltaY <= 0) return; // scrolling up is always free
       if (!isAtBottom(10)) return; // still reading: normal scrolling
       e.preventDefault();
-      tryExecute(50);
+      trySend(50);
     };
 
     const handleTouchEnd = () => {
-      if (currentSection >= sectionsLength) return;
+      if (!active) return;
       if (!isAtBottom(24)) return;
-      tryExecute(250);
+      trySend(250);
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (!active) return; // the composer owns the keyboard once the tour ends
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       const page = el.clientHeight * 0.8;
 
@@ -79,8 +85,7 @@ export const useTerminalScroll = ({
         el.scrollBy({ top: e.key === 'ArrowDown' ? 64 : page, behavior: 'smooth' });
         return;
       }
-      if (currentSection >= sectionsLength) return;
-      tryExecute(0, e.key === 'Enter'); // a deliberate Enter never waits
+      trySend(0, e.key === 'Enter'); // a deliberate Enter never waits
     };
 
     el.addEventListener('wheel', handleWheel, { passive: false });
@@ -91,9 +96,9 @@ export const useTerminalScroll = ({
       el.removeEventListener('wheel', handleWheel);
       el.removeEventListener('touchend', handleTouchEnd);
       window.removeEventListener('keydown', handleKeyDown);
-      if (triggerTimeoutRef.current) clearTimeout(triggerTimeoutRef.current);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [currentSection, sectionsLength, isExecutingRef, hasNewContentRef, executeNextCommand]);
+  }, [active, isRunningRef, hasNewContentRef]);
 
-  return terminalRef;
+  return scrollRef;
 };

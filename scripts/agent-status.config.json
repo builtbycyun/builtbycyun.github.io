@@ -1,0 +1,10 @@
+{
+  "_comment": "Only directories listed in `publish` are ever named on the site. Everything else is counted but stays anonymous ('3 other projects'). Add a directory here to opt it in; delete it to pull it back. `titles: false` publishes a project's activity without its session titles.",
+  "publish": {
+    "builtbycyun.github.io": { "name": "This Page", "titles": true },
+    "selflearn": { "name": "Journeyman", "titles": true },
+    "auctionball": { "name": "Auctionball", "titles": true },
+    "priors": { "name": "Priors", "titles": true }
+  },
+  "maxTitlesPerProject": 3
+}

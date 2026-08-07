@@ -31,12 +31,6 @@ export interface ContactInfo {
   location: string;
 }
 
-export interface TerminalCommand {
-  command: string;
-  description: string;
-  output?: string;
-}
-
 export interface PersonalInfo {
   name: string;
   title: string;
@@ -44,19 +38,4 @@ export interface PersonalInfo {
   location: string;
   yearsOfExperience: number;
   specialties: string[];
-}
-
-export interface TerminalSectionProps {
-  command: string;
-  delay?: number;
-  children: React.ReactNode;
-  className?: string;
-}
-
-export interface TypewriterProps {
-  text: string;
-  delay?: number;
-  speed?: number;
-  className?: string;
-  onComplete?: () => void;
 }

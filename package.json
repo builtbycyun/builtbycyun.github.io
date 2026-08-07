@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "export": "next build"
+    "export": "next build",
+    "agent-status": "node scripts/agent-status.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

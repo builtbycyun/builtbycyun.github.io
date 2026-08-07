@@ -1,0 +1,65 @@
+{
+  "date": "2026-08-07",
+  "generatedAt": "2026-08-07T22:08:00.732Z",
+  "models": [
+    "claude-opus-5"
+  ],
+  "totals": {
+    "projects": 3,
+    "sessions": 3,
+    "prompts": 20,
+    "toolCalls": 511,
+    "filesTouched": 56,
+    "tokens": {
+      "input": 21542,
+      "output": 854590,
+      "cacheWrite": 9572095,
+      "cacheRead": 228272097,
+      "total": 238720324
+    }
+  },
+  "projects": [
+    {
+      "name": "This Page",
+      "branch": "main",
+      "sessions": 1,
+      "prompts": 5,
+      "toolCalls": 230,
+      "filesTouched": 23,
+      "firstAt": "2026-08-07T20:51:41.321Z",
+      "lastAt": "2026-08-07T22:07:52.931Z",
+      "tokens": {
+        "input": 685,
+        "output": 462548,
+        "cacheWrite": 2026594,
+        "cacheRead": 85726174
+      },
+      "titles": [
+        "Redesign website from terminal to Claude Code instance"
+      ]
+    },
+    {
+      "name": "Journeyman",
+      "branch": "main",
+      "sessions": 1,
+      "prompts": 3,
+      "toolCalls": 149,
+      "filesTouched": 14,
+      "firstAt": "2026-08-07T16:59:59.460Z",
+      "lastAt": "2026-08-07T20:52:50.310Z",
+      "tokens": {
+        "input": 20474,
+        "output": 255459,
+        "cacheWrite": 1126797,
+        "cacheRead": 40071647
+      },
+      "titles": [
+        "Implement closed loop feedback system for Journeyman"
+      ]
+    }
+  ],
+  "anonymous": {
+    "projects": 1,
+    "sessions": 1
+  }
+}
