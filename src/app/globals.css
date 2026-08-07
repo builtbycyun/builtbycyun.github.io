@@ -765,6 +765,121 @@ code {
   color: var(--faint);
 }
 
+/* ---- Activity heatmap ---- */
+
+.activity + .activity {
+  margin-top: 28px;
+}
+
+.activity-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.3em 2ch;
+  margin-bottom: 10px;
+}
+
+.activity-head h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.activity-note {
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  color: var(--faint);
+}
+
+/* A year of cells is wider than a phone; it scrolls inside its own box so the
+   page body never scrolls sideways. */
+.activity-scroll {
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: #33302a transparent;
+}
+
+.activity-inner {
+  display: inline-block;
+  min-width: 100%;
+}
+
+.activity-months,
+.activity-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--weeks), 1fr);
+  gap: 3px; /* the surface gap doing the separating — no strokes on cells */
+}
+
+.activity-months {
+  margin-bottom: 5px;
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  color: var(--faint);
+}
+
+.activity-months span {
+  white-space: nowrap;
+}
+
+.activity-grid {
+  grid-template-rows: repeat(7, 1fr);
+  grid-auto-flow: column;
+}
+
+/* Sequential ramp: one hue, faint -> strong against the dark surface. Magnitude
+   never depends on telling two hues apart. */
+.cell {
+  aspect-ratio: 1;
+  min-width: 9px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.cell.pad {
+  background: transparent;
+}
+
+.cell.lvl0 { background: rgba(255, 255, 255, 0.045); }
+.cell.lvl1 { background: rgba(217, 119, 87, 0.26); }
+.cell.lvl2 { background: rgba(217, 119, 87, 0.48); }
+.cell.lvl3 { background: rgba(217, 119, 87, 0.72); }
+.cell.lvl4 { background: var(--accent); }
+
+.activity-legend {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 2ch;
+  margin-top: 12px;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  color: var(--faint);
+}
+
+.activity-scale {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.activity-scale .cell {
+  width: 10px;
+  min-width: 10px;
+  height: 10px;
+}
+
+.activity-scale .cell:first-of-type {
+  margin-left: 0.6ch;
+}
+
+.activity-scale .cell:last-of-type {
+  margin-right: 0.6ch;
+}
+
 .agent-card {
   padding: 16px 18px;
   margin-bottom: 10px;

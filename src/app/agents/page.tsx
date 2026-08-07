@@ -1,13 +1,16 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { ActivityGraph } from './ActivityGraph';
 import {
   agentStatus,
+  commitActivity,
   formatCount,
   formatDay,
   formatSpan,
   formatStamp,
   formatTokens,
   hasAgentStatus,
+  hasCommitActivity,
 } from '../../lib/agentStatus';
 
 export const metadata: Metadata = {
@@ -21,7 +24,8 @@ export const metadata: Metadata = {
  * committed summary, so there is no loading state and no client JavaScript.
  */
 export default function AgentsPage() {
-  const { date, generatedAt, models, totals, projects, anonymous } = agentStatus;
+  const { date, generatedAt, models, totals, projects, anonymous, history, lifetime } =
+    agentStatus;
   const { tokens } = totals;
 
   // One hue for every meter. The site's orange and green sit ΔE 3.5 apart under
@@ -75,6 +79,56 @@ export default function AgentsPage() {
                 <Stat label="Tool calls" value={formatCount(totals.toolCalls)} />
                 <Stat label="Files edited" value={formatCount(totals.filesTouched)} />
                 <Stat label="Prompts" value={formatCount(totals.prompts)} />
+              </section>
+
+              <section className="page-section">
+                <h2 className="page-heading">
+                  <span>Over time</span>
+                  <span className="page-rule" aria-hidden="true" />
+                  <span className="page-heading-meta">last 53 weeks</span>
+                </h2>
+
+                <ActivityGraph
+                  title="Claude tokens per day"
+                  note={`snapshot · ${formatDay(date)}`}
+                  days={history.map(day => ({
+                    date: day.date,
+                    value: day.tokens,
+                    tooltip:
+                      day.tokens > 0
+                        ? `${day.date} · ${formatTokens(day.tokens)} tokens · ${day.sessions} ${
+                            day.sessions === 1 ? 'session' : 'sessions'
+                          } · ${formatCount(day.toolCalls)} tool calls`
+                        : `${day.date} · nothing`,
+                  }))}
+                  caption={`${lifetime.days} active days · ${formatTokens(
+                    lifetime.tokens
+                  )} tokens · ${formatCount(lifetime.toolCalls)} tool calls since ${
+                    lifetime.firstDate ? formatDay(lifetime.firstDate) : 'the start'
+                  }`}
+                />
+
+                {hasCommitActivity && (
+                  <ActivityGraph
+                    title="Commits per day"
+                    note="live · refreshed daily by GitHub"
+                    days={commitActivity.days.map(day => ({
+                      date: day.date,
+                      value: day.count,
+                      tooltip:
+                        day.count > 0
+                          ? `${day.date} · ${day.count} ${
+                              day.count === 1 ? 'contribution' : 'contributions'
+                            }`
+                          : `${day.date} · nothing`,
+                    }))}
+                    caption={`${formatCount(commitActivity.totalContributions)} contributions across ${
+                      commitActivity.activeDays
+                    } days · ${formatCount(
+                      commitActivity.privateContributions
+                    )} in private repos`}
+                  />
+                )}
               </section>
 
               <section className="page-section">

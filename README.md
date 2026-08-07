@@ -38,9 +38,36 @@ Session titles describe what you were doing, so a directory is opted in
 deliberately — add it to `publish`, or set `titles: false` to publish a project's
 numbers without its titles.
 
-To keep it current automatically, schedule `npm run agent-status` plus a commit
-on this machine (Task Scheduler, or a Claude Code routine). GitHub Actions can't
-do it — the transcripts are local, and the runner is not.
+It is cheap to re-run. Every transcript is parsed once and cached by
+`(mtime, size)`; old sessions never change, so a repeat run only reads what you
+worked on since. Over a 532MB corpus that is **1.9s cold, 0.2s warm**. Lines are
+streamed rather than slurped, so memory stays flat. Nothing runs in the
+background and nothing polls — it is a one-shot you invoke.
+
+## What updates itself, and what doesn't
+
+The two heatmaps on `/agents` have deliberately different lifecycles:
+
+| Graph | Source | Stays current? |
+| --- | --- | --- |
+| **Commits per day** | GitHub's contributions API, via `.github/workflows/activity.yml` on a daily cron | **Yes** — runs on GitHub, no local machine involved |
+| **Claude tokens per day** | Local session transcripts, via `npm run agent-status` | Only when you run it |
+
+That split isn't a shortcut, it's the constraint: Claude usage data exists
+**only** in local transcripts. Anthropic publishes no API for "what did this
+account do", so no cloud job can reach it. Zero local execution means zero
+Claude data. The history is the forgiving part — the transcripts are a complete
+archive, so one run backfills every past day at once, and only the newest day
+goes stale between runs.
+
+If you want the Claude half fresher without a scheduled task, hook it to
+something you already do rather than to the clock — a Claude Code `SessionEnd`
+hook runs it exactly when a session produces new data, and nothing runs in
+between.
+
+To include private repositories in the commit graph, add a personal access
+token with `repo` scope as an `ACTIVITY_TOKEN` repository secret. Without it the
+workflow falls back to the default token.
 
 ## Running it
 
@@ -67,6 +94,9 @@ Static export only — no server. GitHub Actions builds `main` and publishes
 | `src/lib/agentStatus.ts` | Loads and formats the agent status feed |
 | `scripts/agent-status.mjs` | Summarises local Claude Code sessions into `public/agent-status.json` |
 | `scripts/agent-status.config.json` | Which project directories may be named publicly |
+| `scripts/commit-activity.mjs` | Pulls commits-per-day from GitHub (runs in Actions, not locally) |
+| `src/app/agents/page.tsx` | The `/agents` page — static, no client JavaScript |
+| `src/app/agents/ActivityGraph.tsx` | The contribution-style heatmap |
 
 To change what the page says, edit `src/lib/data.ts`. To change what it asks,
 edit `src/lib/session.tsx`.

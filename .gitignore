@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local cache for scripts/agent-status.mjs — rebuilt on demand
+/scripts/.agent-status-cache.json
