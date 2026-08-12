@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Christopher Yun — Resume</title>
+<style>
+  @page { size: Letter; margin: 0.4in 0.5in 0.4in 0.5in; }
+
+  :root {
+    --body: 9.5pt;
+    --serif: "Latin Modern Roman", "CMU Serif", "Cambria", "Georgia", "Times New Roman", serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--serif);
+    font-size: var(--body);
+    line-height: 1.20;
+    color: #000;
+    background: #fff;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: #000; text-decoration: underline; }
+
+  /* ---------- header ---------- */
+  header { text-align: center; margin-bottom: 3pt; }
+
+  h1 {
+    font-size: 23pt;
+    font-weight: 400;
+    font-variant: small-caps;
+    letter-spacing: 0.5pt;
+    margin: 0 0 2pt;
+    line-height: 1;
+  }
+
+  .address { font-size: 9.2pt; margin-bottom: 1pt; }
+  .contact { font-size: 9.2pt; }
+  .contact .sep { padding: 0 4pt; }
+
+  /* ---------- sections ---------- */
+  h2 {
+    font-size: 12pt;
+    font-weight: 400;
+    font-variant: small-caps;
+    letter-spacing: 0.3pt;
+    margin: 7pt 0 0;
+    padding: 0;
+  }
+  h2::after {
+    content: "";
+    display: block;
+    border-bottom: 0.7pt solid #000;
+    margin-top: 0.5pt;
+  }
+
+  .entry { margin-top: 4pt; }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10pt;
+  }
+
+  .org { font-weight: 700; }
+  .when { font-weight: 700; white-space: nowrap; }
+  .role { font-style: italic; }
+  .where { font-style: italic; white-space: nowrap; }
+
+  ul {
+    margin: 1pt 0 0;
+    padding-left: 12pt;
+  }
+  li { margin-bottom: 1.5pt; text-align: left; }
+  li::marker { font-size: 0.85em; }
+
+  /* ---------- projects ---------- */
+  .proj-name { font-weight: 700; }
+  .proj-stack { font-style: italic; }
+
+  /* ---------- skills ---------- */
+  .skills { margin-top: 2pt; padding-left: 8pt; }
+  .skills p { margin: 0 0 1pt; }
+  .skills b { font-weight: 700; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Christopher Yun</h1>
+  <div class="address">42722 Freedom Street, Chantilly, Virginia 20152</div>
+  <div class="contact">
+    703-606-8406<span class="sep">|</span><a href="mailto:cyunsoftware@gmail.com">cyunsoftware@gmail.com</a><span class="sep">|</span><a href="https://linkedin.com/in/christopheryun">linkedin.com/in/christopheryun</a><span class="sep">|</span><a href="https://builtbycyun.github.io">builtbycyun.github.io</a>
+  </div>
+</header>
+
+<h2>Education</h2>
+<div class="entry">
+  <div class="row"><span class="org">University of Maryland, College Park</span><span class="when">Aug. 2021 &ndash; May 2025</span></div>
+  <div class="row"><span class="role">Bachelor of Science in Computer Science</span><span class="where">College Park, MD</span></div>
+</div>
+
+<h2>Experience</h2>
+
+<div class="entry">
+  <div class="row"><span class="org">Samsara</span><span class="when">Aug. 2025 &ndash; Present</span></div>
+  <div class="row"><span class="role">Software Engineer</span><span class="where">San Francisco, CA</span></div>
+  <ul>
+    <li>Built an LLM-powered pull request review and auto-approval system for a large engineering monorepo that now merges 35% of all PRs with no human reviewer, removing review wait as a bottleneck for a third of the organization&rsquo;s code changes.</li>
+    <li>Designed an agentic evaluation harness replaying curated datasets of real production PRs against configurable agent backends, making review quality measurable and enabling rapid iteration on prompts and models.</li>
+    <li>Scaled the reviewer from a pilot allowlist to every PR in the organization using whole-file review context, cross-push deduplication of repeat findings, severity-tiered annotations, and an engineer feedback loop, kept safe by deterministic guardrails for code coverage, high-risk alerting, and per-team approval policies.</li>
+    <li>Shipped an emergency deployment workflow on the internal deploy platform, adding non-mainline branch builds and one-click rollback for failed pipelines to cut time-to-mitigate during production incidents.</li>
+  </ul>
+</div>
+
+<div class="entry">
+  <div class="row"><span class="org">Amazon Web Services</span><span class="when">June 2024 &ndash; Aug. 2024</span></div>
+  <div class="row"><span class="role">Software Development Engineering Intern</span><span class="where">Sunnyvale, CA</span></div>
+  <ul>
+    <li>Reduced inefficient resource usage by 20% by developing an AWS-based application to automatically identify and reclaim idle resources in a distributed computing service, with CI/CD pipelines for rapid iteration and deployment.</li>
+    <li>Designed a customer-facing reporting system using React and AWS, enabling users to visualize resource utilization data with advanced filtering and remediate inefficiencies themselves.</li>
+    <li>Architected serverless solutions using AWS Lambda, DynamoDB, and API Gateway, scaled to thousands of concurrent requests.</li>
+  </ul>
+</div>
+
+<div class="entry">
+  <div class="row"><span class="org">Vesta Technologies LLC.</span><span class="when">Aug. 2020 &ndash; May 2022</span></div>
+  <div class="row"><span class="role">Founder / Fullstack Software Developer</span><span class="where">Chantilly, VA</span></div>
+  <ul>
+    <li>Spearheaded a cross-functional team of 5 engineers to deliver a SaaS desktop application using Python, React.js, and Go, optimizing e-commerce checkout workflows and generating over $500,000 in gross revenue.</li>
+    <li>Reverse-engineered Akamai WAF by analyzing JavaScript-based security mechanisms, developing custom TLS request clients in Python and Go to simulate legitimate user traffic.</li>
+    <li>Trained a TensorFlow neural network generating realistic mouse movement telemetry fingerprints, mimicking human behavior with 98% accuracy.</li>
+    <li>Architected a scalable microservices backend on AWS using EC2, S3, RDS, Lambda, and Express to support over 200 concurrent users.</li>
+  </ul>
+</div>
+
+<h2>Projects</h2>
+
+<div class="entry">
+  <div class="row">
+    <span><span class="proj-name">Auctionball</span> | <span class="proj-stack">TypeScript, Node.js, WebSockets, PostgreSQL, Render</span></span>
+    <span class="when">2026 &ndash; Present</span>
+  </div>
+  <ul>
+    <li>Built and shipped a live head-to-head basketball auction game with over 25,000 games played, in which two players bid to draft a five-man squad from the all-time greats, then a possession-based Monte Carlo simulator, calibrated against real NBA stat distributions, decides the winner.</li>
+    <li>Engineered a synergy model scoring spacing, playmaking, and switchability that beats raw star power over 60% of the time, plus WebSocket matchmaking with bot fallback, reconnects, and a daily win-streak leaderboard.</li>
+  </ul>
+</div>
+
+<div class="entry">
+  <div class="row">
+    <span><span class="proj-name">Journeyman</span> | <span class="proj-stack">Python, FastAPI, Go, TypeScript, SQLite, Claude API</span></span>
+    <span class="when">2026 &ndash; Present</span>
+  </div>
+  <ul>
+    <li>Built an open-source Python library that turns any LLM agent into a self-learning system in two lines of integration code, with a single decorator tracing every run: inputs, outputs, tool calls, tokens, cost, latency, and errors.</li>
+    <li>Designed an eval gate so a lesson learned from user feedback only stays live while the eval suite&rsquo;s pass rate holds and rolls back automatically when it does not, backed by YAML eval suites, seven scorer types including LLM-as-judge, and an embedded SQLite store or HTTP server for cross-process tracing.</li>
+  </ul>
+</div>
+
+<h2>Technical Skills</h2>
+<div class="skills">
+  <p><b>Languages</b>: Go, TypeScript, JavaScript, Python, Java, SQL, HTML/CSS, Ruby, Rust, OCaml, C++, Kotlin, Bash</p>
+  <p><b>Frameworks</b>: React, Next.js, Node.js, Express, GraphQL, gRPC, Flask, FastAPI, Django, WebSockets/Socket.IO, React Native, Electron, Tailwind, Webpack, Vite, pytest</p>
+  <p><b>AI/ML</b>: Claude API, OpenAI API, LLM agents, agent evaluation harnesses, TensorFlow, Keras, OpenCV</p>
+  <p><b>Cloud &amp; Tools</b>: AWS (Lambda, DynamoDB, API Gateway, AppSync, S3, EC2), Firebase, Postgres, MySQL, MongoDB, Redis, Docker, CI/CD, GitHub Actions, Jenkins, Linux, OAuth, Git, Figma, Jira, Notion, Confluence</p>
+</div>
+
+</body>
+</html>

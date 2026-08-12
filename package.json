@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "export": "next build",
-    "agent-status": "node scripts/agent-status.mjs"
+    "agent-status": "node scripts/agent-status.mjs",
+    "resume": "node scripts/build-resume.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",
